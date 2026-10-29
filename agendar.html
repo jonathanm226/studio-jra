@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>Agendamento | Studio de Unhas</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary-color: #E8639A;
+            --primary-hover: #D44D85;
+            --bg-color: #161217;
+            --box-color: #221A23;
+            --box-border: rgba(232, 99, 154, 0.15);
+            --text-color: #F8F5F8;
+            --text-muted: #B8A9B8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            display: flex; 
+            justify-content: center; 
+            opacity: 0; 
+            transition: opacity 0.4s ease;
+            min-height: 100vh;
+        }
+        
+        body.carregado { opacity: 1; }
+
+        .app-container { 
+            width: 100%; 
+            max-width: 520px; 
+            padding: 20px 16px 100px 16px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 22px; 
+        }
+
+        /* Header Principal */
+        .barber-header { 
+            text-align: center; 
+            background: linear-gradient(145deg, #2A1F2B, var(--box-color)); 
+            padding: 24px 18px; 
+            border-radius: 20px; 
+            border: 1px solid var(--box-border); 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .brand-logo-container { 
+            width: 86px; 
+            height: 86px; 
+            margin: 0 auto 14px auto; 
+            border: 2px solid var(--primary-color); 
+            border-radius: 50%; 
+            overflow: hidden; 
+            background: var(--bg-color); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            box-shadow: 0 0 15px rgba(232, 99, 154, 0.3);
+        }
+
+        .brand-logo-container img { width: 100%; height: 100%; object-fit: cover; }
+        .barber-header h1 { font-size: 1.45rem; margin-bottom: 4px; font-weight: 700; letter-spacing: 0.5px; }
+        .barber-header p { color: var(--primary-color); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Seções */
+        .section h2 { 
+            font-size: 1.05rem; 
+            margin-bottom: 14px; 
+            color: var(--text-color); 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .section h2 i { color: var(--primary-color); font-size: 1.1rem; }
+
+        /* Grid Profissionais */
+        .barbers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
+        
+        .barber-card { 
+            background: var(--box-color); 
+            border: 1px solid var(--box-border); 
+            padding: 16px 12px; 
+            border-radius: 16px; 
+            text-align: center; 
+            cursor: pointer; 
+            transition: all 0.25s ease; 
+        }
+
+        .barber-card:hover { border-color: var(--primary-color); transform: translateY(-2px); }
+        
+        .barber-card.active { 
+            border-color: var(--primary-color); 
+            background: rgba(232, 99, 154, 0.12); 
+            box-shadow: 0 0 12px rgba(232, 99, 154, 0.2);
+        }
+
+        /* Grid Serviços */
+        .services-grid { display: grid; gap: 12px; }
+        
+        .service-card { 
+            background: var(--box-color); 
+            border: 1px solid var(--box-border); 
+            padding: 16px 18px; 
+            border-radius: 16px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            cursor: pointer; 
+            transition: all 0.25s ease;
+        }
+
+        .service-card:hover { border-color: var(--primary-color); }
+        
+        .service-card.active { 
+            border-color: var(--primary-color); 
+            background: rgba(232, 99, 154, 0.12); 
+            box-shadow: 0 0 12px rgba(232, 99, 154, 0.15);
+        }
+
+        .service-info h3 { font-size: 0.98rem; margin-bottom: 4px; font-weight: 600; }
+        .service-info span { font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+        .price { color: var(--primary-color); font-weight: 700; font-size: 1.1rem; }
+
+        /* Inputs de Formulário */
+        .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+        .input-group label { font-size: 0.88rem; color: var(--text-muted); font-weight: 500; }
+        
+        .input-group input { 
+            padding: 14px 16px; 
+            background: var(--box-color); 
+            border: 1px solid var(--box-border); 
+            border-radius: 12px; 
+            color: var(--text-color); 
+            font-size: 0.98rem; 
+            outline: none; 
+            color-scheme: dark; 
+            transition: 0.2s;
+        }
+
+        .input-group input:focus { border-color: var(--primary-color); box-shadow: 0 0 8px rgba(232, 99, 154, 0.3); }
+
+        /* GRADE DE HORÁRIOS EM BOTÕES (IGUAL AO PRINT) */
+        .time-slots-container {
+            margin-top: 10px;
+        }
+        
+        .time-slots-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 10px; 
+            margin-top: 8px;
+        }
+
+        .time-slot-btn { 
+            background: var(--box-color); 
+            border: 1px solid var(--box-border); 
+            color: var(--text-color); 
+            padding: 14px 6px; 
+            border-radius: 10px; 
+            font-size: 0.95rem; 
+            font-weight: 700; 
+            cursor: pointer; 
+            text-align: center; 
+            transition: all 0.2s ease;
+            outline: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .time-slot-btn:hover:not(.disabled) { 
+            border-color: var(--primary-color); 
+            background: rgba(232, 99, 154, 0.1); 
+        }
+
+        .time-slot-btn.active { 
+            background: var(--primary-color); 
+            color: #FFF; 
+            border-color: var(--primary-color); 
+            box-shadow: 0 0 12px rgba(232, 99, 154, 0.4);
+        }
+
+        .time-slot-btn.disabled { 
+            opacity: 0.22; 
+            cursor: not-allowed; 
+            background: #18131A; 
+            border-color: rgba(255, 255, 255, 0.05); 
+            color: #666;
+            pointer-events: none;
+        }
+
+        .no-slots-msg {
+            grid-column: span 4;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 15px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 10px;
+        }
+
+        /* Resumo Flutuante e Ação */
+        #resumo-flutuante { 
+            display: none; 
+            background: var(--box-color); 
+            border: 1px solid var(--primary-color); 
+            border-radius: 16px; 
+            padding: 16px; 
+            margin-bottom: 20px; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .btn-whatsapp { 
+            width: 100%; 
+            padding: 16px; 
+            background: var(--primary-color); 
+            color: #FFF; 
+            border: none; 
+            border-radius: 14px; 
+            font-weight: 700; 
+            font-size: 1rem; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 10px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+            box-shadow: 0 6px 20px rgba(232, 99, 154, 0.35);
+            transition: 0.2s ease;
+        }
+
+        .btn-whatsapp:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+        /* Modal Customizado */
+        .custom-modal-overlay { 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.82); 
+            backdrop-filter: blur(4px);
+            display: none; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 9999; 
+        }
+
+        .custom-modal { 
+            background: var(--box-color); 
+            border: 1px solid var(--box-border); 
+            padding: 24px; 
+            border-radius: 20px; 
+            width: 92%; 
+            max-width: 420px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .custom-modal h3 { margin-bottom: 16px; font-size: 1.2rem; text-align: center; color: var(--text-color); }
+    </style>
+    <script>
+        (function() {
+            const slug = new URLSearchParams(window.location.search).get('slug') || "padrao";
+            const cached = localStorage.getItem('tema_neobooking_' + slug);
+            if (cached) {
+                const c = JSON.parse(cached);
+                const r = document.documentElement;
+                if(c.cor_primaria) r.style.setProperty('--primary-color', c.cor_primaria);
+                if(c.cor_fundo) r.style.setProperty('--bg-color', c.cor_fundo);
+                if(c.cor_caixas) r.style.setProperty('--box-color', c.cor_caixas);
+                if(c.cor_letras) r.style.setProperty('--text-color', c.cor_letras);
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div class="app-container" id="agendar-container">
+        <!-- Header da Esmalteria -->
+        <header class="barber-header">
+            <div class="brand-logo-container">
+                <img id="tenant-logo" src="" alt="Logo Studio" style="display:none;">
+                <i id="tenant-icon-fallback" class="fa-solid fa-wand-magic-sparkles" style="font-size: 2rem; color: var(--primary-color);"></i>
+            </div>
+            <h1 id="tenant-name">Carregando Studio...</h1>
+            <p id="tenant-slogan">Esmalteria & Studio de Beleza</p>
+        </header>
+
+        <!-- Seleção de Profissional / Nail Designer -->
+        <section class="section">
+            <h2><i class="fa-solid fa-user-check"></i> 1. Escolha a Profissional</h2>
+            <div id="barbers-grid" class="barbers-grid"></div>
+        </section>
+
+        <!-- Seleção de Serviços -->
+        <section class="section">
+            <h2><i class="fa-solid fa-hand-sparkles"></i> 2. Escolha os Serviços</h2>
+            <div id="services-grid" class="services-grid"></div>
+        </section>
+
+        <!-- Resumo Flutuante de Seleção -->
+        <div id="resumo-flutuante">
+            <div>
+                <span id="resumo-qtd-servicos" style="font-size: 0.8rem; color: var(--text-muted); display: block;">Nenhum serviço</span>
+                <strong id="resumo-valor-total" style="font-size: 1.25rem; color: var(--primary-color);">R$ 0,00</strong>
+            </div>
+            <span id="resumo-duracao" style="font-size: 0.8rem; color: #FFF; background: rgba(255,255,255,0.08); padding: 6px 12px; border-radius: 8px;">0 min</span>
+        </div>
+
+        <!-- Grade de Horários (Conforme Print Enviado) -->
+        <section class="section">
+            <h2><i class="fa-regular fa-calendar-days"></i> 3. Data e Horário</h2>
+            <div class="input-group">
+                <label for="date">Data do Atendimento:</label>
+                <input type="date" id="date" onchange="checkAvailableTimes()">
+            </div>
+
+            <div class="time-slots-container">
+                <label style="font-size: 0.88rem; color: var(--text-muted); font-weight: 500;">Selecione o Horário:</label>
+                <!-- Input hidden que guarda o horário selecionado -->
+                <input type="hidden" id="time" value="">
+                
+                <!-- Grid em botões de 4 colunas -->
+                <div id="slots-grid" class="time-slots-grid">
+                    <div class="no-slots-msg">Selecione o profissional e a data acima</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dados da Cliente -->
+        <section class="section">
+            <h2><i class="fa-regular fa-address-card"></i> 4. Seus Dados</h2>
+            <div class="input-group">
+                <label for="client-name">Nome Completo:</label>
+                <input type="text" id="client-name" placeholder="Digite seu nome completo" required>
+            </div>
+            <div class="input-group">
+                <label for="client-phone">WhatsApp (com DDD):</label>
+                <input type="tel" id="client-phone" placeholder="Ex: (31) 99999-9999" required>
+            </div>
+        </section>
+
+        <button class="btn-whatsapp" onclick="abrirModalConfirmacao()">
+            Avançar para Confirmação <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <!-- Modal de Confirmação e Pagamento do Sinal -->
+    <div id="modal-confirmacao" class="custom-modal-overlay">
+        <div class="custom-modal">
+            <h3>Resumo da Reserva</h3>
+            <div id="resumo-agendamento" style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: 12px; margin-bottom: 16px; font-size: 0.9rem; line-height: 1.6;"></div>
+            
+            <div style="background: rgba(232, 99, 154, 0.1); border: 1px dashed var(--primary-color); padding: 16px; border-radius: 12px; margin-bottom: 20px; text-align: center;">
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Sinal para garantia de horário (50%):</p>
+                <strong id="valor-sinal-pix" style="font-size: 1.45rem; color: var(--primary-color); display: block; margin-bottom: 8px;">R$ 0,00</strong>
+                <p style="font-size: 0.8rem; margin-bottom: 6px;">Chave PIX do Studio:</p>
+                
+                <div id="pix-key-display" style="background: var(--bg-color); padding: 10px; border-radius: 8px; font-weight: bold; font-family: monospace; user-select: all; cursor: pointer; border: 1px solid var(--box-border);">
+                    Carregando chave...
+                </div>
+                
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 10px;">* O comprovante deve ser enviado ao finalizar no WhatsApp.</p>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button id="btn-confirmar-agendamento" onclick="confirmarEEnviar()" style="padding: 14px; border-radius: 12px; font-weight: bold; border: none; background: #25D366; color: #FFF; cursor: pointer; font-size: 0.95rem;">
+                    <i class="fa-brands fa-whatsapp"></i> Confirmar e Enviar Comprovante
+                </button>
+                <button onclick="fecharModalConfirmacao()" style="padding: 12px; border-radius: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: #FFF; cursor: pointer;">
+                    Voltar e Alterar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Alerta -->
+    <div id="modal-alerta-custom" class="custom-modal-overlay">
+        <div class="custom-modal" style="text-align: center; max-width: 330px;">
+            <i class="fa-solid fa-circle-exclamation" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 14px;"></i>
+            <p id="alerta-custom-texto" style="font-size: 0.95rem; margin-bottom: 20px; color: #DDD;"></p>
+            <button onclick="fecharAlertaCustom()" style="padding: 12px; width: 100%; border-radius: 10px; font-weight: bold; border: none; background: var(--primary-color); color: #FFF; cursor: pointer;">Entendido</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

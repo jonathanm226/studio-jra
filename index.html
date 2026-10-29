@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title id="page-title">Studio de Unhas | Bem-vinda</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --primary-color: #E8639A; --bg-color: #161217; --box-color: #221A23; --text-color: #FFFFFF; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); display: flex; justify-content: center; min-height: 100vh; opacity: 0; transition: opacity 0.4s ease; }
+        body.carregado { opacity: 1; }
+        .app-container { width: 100%; max-width: 500px; padding: 20px 15px; display: flex; flex-direction: column; gap: 20px; }
+        
+        .landing-header { text-align: center; background: var(--box-color); padding: 25px 15px; border-radius: 20px; border: 1px solid rgba(232, 99, 154, 0.15); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .brand-logo-container { width: 85px; height: 85px; background: var(--bg-color); border: 2px solid var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; overflow: hidden; }
+        .brand-logo-container img { width: 100%; height: 100%; object-fit: cover; }
+        .landing-header h1 { font-size: 1.5rem; margin-bottom: 5px; font-weight: 700; }
+        .tagline { color: var(--primary-color); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .section { background: var(--box-color); border: 1px solid rgba(232, 99, 154, 0.15); border-radius: 16px; padding: 18px; }
+        .section h2 { font-size: 1rem; color: var(--primary-color); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .section p { font-size: 0.88rem; color: #DDD; line-height: 1.5; }
+        
+        .btn-primary-action { display: block; width: 100%; padding: 16px; background-color: var(--primary-color); color: #FFF; border-radius: 12px; font-weight: bold; text-align: center; text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 6px 20px rgba(232, 99, 154, 0.35); transition: 0.2s; }
+        .btn-primary-action:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+        .powered-by { margin-top: 15px; text-align: center; padding: 20px 15px; border-top: 1px dashed rgba(255,255,255,0.1); }
+        .powered-by p { font-size: 0.85rem; color: #AAA; margin-bottom: 15px; line-height: 1.4; }
+        .powered-by a { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #FFF; text-decoration: none; font-weight: bold; padding: 10px 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; transition: 0.3s; }
+        .powered-by a:hover { background: var(--primary-color); border-color: var(--primary-color); }
+    </style>
+    <script>
+        (function() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const slug = params.get('slug') || "padrao";
+                const cached = localStorage.getItem('tema_neobooking_' + slug);
+                if (cached) {
+                    const c = JSON.parse(cached);
+                    const r = document.documentElement;
+                    if(c.cor_primaria) r.style.setProperty('--primary-color', c.cor_primaria);
+                    if(c.cor_fundo) r.style.setProperty('--bg-color', c.cor_fundo);
+                    if(c.cor_caixas) r.style.setProperty('--box-color', c.cor_caixas);
+                    if(c.cor_letras) r.style.setProperty('--text-color', c.cor_letras);
+                }
+            } catch (err) {}
+        })();
+    </script>
+</head>
+<body>
+    <div class="app-container">
+        <header class="landing-header">
+            <div class="brand-logo-container">
+                <img id="landing-logo" src="" alt="Logo" style="display:none;">
+                <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 2rem; color: var(--primary-color);"></i>
+            </div>
+            <h1 id="landing-nome">Carregando...</h1>
+            <p class="tagline" id="landing-slogan">Esmalteria & Studio de Beleza</p>
+        </header>
+
+        <section class="section">
+            <h2>Sobre o Studio</h2>
+            <p id="landing-sobre">Bem-vinda ao nosso espaço exclusivo para cuidar das suas unhas e da sua beleza com profissionais qualificadas!</p>
+        </section>
+
+        <section class="section">
+            <h2>Localização</h2>
+            <p id="landing-endereco">Endereço não informado.</p>
+        </section>
+
+        <div class="landing-action">
+            <a href="#" id="btn-ir-agendar" class="btn-primary-action"><i class="fa-regular fa-calendar-check"></i> Agendar Meu Horário</a>
+        </div>
+
+        <div class="powered-by">
+            <p>Quer automatizar o agendamento do seu Studio de Unhas ou Esmalteria?</p>
+            <a href="https://api.whatsapp.com/send?phone=5531972478571&text=Ol%C3%A1!%20Gostaria%20de%20um%20sistema%20de%20agendamento%20para%20meu%20studio." target="_blank">
+                <i class="fa-solid fa-rocket"></i> Fale com a Neologic Tech Systems
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://doecoosuqibzdsyadsyg.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_-30z4xAhwJPYmy1bfSEjCw_loKUe8uL";
+        
+        let _supabase = null;
+        try {
+            _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        } catch (e) {}
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const TENANT_ATIVO = urlParams.get('slug') || "padrao";
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                if (_supabase) {
+                    const { data } = await _supabase.from("saas_estabelecimentos").select("*").eq("slug", TENANT_ATIVO).maybeSingle();
+                    if (data) {
+                        document.getElementById("page-title").textContent = `${data.nome_empresa || 'Studio'} | Agendamento`;
+                        document.getElementById("landing-nome").textContent = data.nome_empresa || "Studio de Unhas";
+                        document.getElementById("landing-sobre").textContent = data.sobre || "Bem-vinda ao nosso espaço dedicado à sua beleza!";
+                        document.getElementById("landing-endereco").textContent = data.endereco || "Não cadastrado.";
+                        if (data.logo_url) { 
+                            const img = document.getElementById("landing-logo"); 
+                            img.src = data.logo_url; 
+                            img.style.display = "block"; 
+                        }
+                        if (data.cor_primaria) document.documentElement.style.setProperty('--primary-color', data.cor_primaria);
+                        if (data.cor_fundo) document.documentElement.style.setProperty('--bg-color', data.cor_fundo);
+                        if (data.cor_caixas) document.documentElement.style.setProperty('--box-color', data.cor_caixas);
+                        if (data.cor_letras) document.documentElement.style.setProperty('--text-color', data.cor_letras);
+
+                        localStorage.setItem('tema_neobooking_' + TENANT_ATIVO, JSON.stringify({
+                            cor_primaria: data.cor_primaria,
+                            cor_fundo: data.cor_fundo,
+                            cor_caixas: data.cor_caixas,
+                            cor_letras: data.cor_letras
+                        }));
+                    }
+                }
+            } catch (err) {}
+
+            document.getElementById("btn-ir-agendar").href = `agendar.html${window.location.search}`;
+            document.body.classList.add('carregado');
+        });
+
+        setTimeout(() => { document.body.classList.add('carregado'); }, 1500);
+    </script>
+</body>
+</html>
