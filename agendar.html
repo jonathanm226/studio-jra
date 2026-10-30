@@ -41,7 +41,6 @@
             gap: 22px; 
         }
 
-        /* Header Principal */
         .barber-header { 
             text-align: center; 
             background: linear-gradient(145deg, #2A1F2B, var(--box-color)); 
@@ -69,7 +68,6 @@
         .barber-header h1 { font-size: 1.45rem; margin-bottom: 4px; font-weight: 700; letter-spacing: 0.5px; }
         .barber-header p { color: var(--primary-color); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Seções */
         .section h2 { 
             font-size: 1.05rem; 
             margin-bottom: 14px; 
@@ -82,7 +80,6 @@
         }
         .section h2 i { color: var(--primary-color); font-size: 1.1rem; }
 
-        /* Grid Profissionais */
         .barbers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
         
         .barber-card { 
@@ -103,7 +100,6 @@
             box-shadow: 0 0 12px rgba(232, 99, 154, 0.2);
         }
 
-        /* Grid Serviços */
         .services-grid { display: grid; gap: 12px; }
         
         .service-card { 
@@ -130,7 +126,6 @@
         .service-info span { font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
         .price { color: var(--primary-color); font-weight: 700; font-size: 1.1rem; }
 
-        /* Inputs de Formulário */
         .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
         .input-group label { font-size: 0.88rem; color: var(--text-muted); font-weight: 500; }
         
@@ -148,17 +143,8 @@
 
         .input-group input:focus { border-color: var(--primary-color); box-shadow: 0 0 8px rgba(232, 99, 154, 0.3); }
 
-        /* GRADE DE HORÁRIOS EM BOTÕES (IGUAL AO PRINT) */
-        .time-slots-container {
-            margin-top: 10px;
-        }
-        
-        .time-slots-grid { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 10px; 
-            margin-top: 8px;
-        }
+        .time-slots-container { margin-top: 10px; }
+        .time-slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 8px; }
 
         .time-slot-btn { 
             background: var(--box-color); 
@@ -177,38 +163,12 @@
             justify-content: center;
         }
 
-        .time-slot-btn:hover:not(.disabled) { 
-            border-color: var(--primary-color); 
-            background: rgba(232, 99, 154, 0.1); 
-        }
+        .time-slot-btn:hover:not(.disabled) { border-color: var(--primary-color); background: rgba(232, 99, 154, 0.1); }
+        .time-slot-btn.active { background: var(--primary-color); color: #FFF; border-color: var(--primary-color); box-shadow: 0 0 12px rgba(232, 99, 154, 0.4); }
+        .time-slot-btn.disabled { opacity: 0.22; cursor: not-allowed; background: #18131A; border-color: rgba(255, 255, 255, 0.05); color: #666; pointer-events: none; }
 
-        .time-slot-btn.active { 
-            background: var(--primary-color); 
-            color: #FFF; 
-            border-color: var(--primary-color); 
-            box-shadow: 0 0 12px rgba(232, 99, 154, 0.4);
-        }
+        .no-slots-msg { grid-column: span 4; text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 10px; }
 
-        .time-slot-btn.disabled { 
-            opacity: 0.22; 
-            cursor: not-allowed; 
-            background: #18131A; 
-            border-color: rgba(255, 255, 255, 0.05); 
-            color: #666;
-            pointer-events: none;
-        }
-
-        .no-slots-msg {
-            grid-column: span 4;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            padding: 15px;
-            background: rgba(255,255,255,0.02);
-            border-radius: 10px;
-        }
-
-        /* Resumo Flutuante e Ação */
         #resumo-flutuante { 
             display: none; 
             background: var(--box-color); 
@@ -243,7 +203,6 @@
 
         .btn-whatsapp:hover { background: var(--primary-hover); transform: translateY(-1px); }
 
-        /* Modal Customizado */
         .custom-modal-overlay { 
             position: fixed; 
             top: 0; left: 0; 
@@ -270,7 +229,7 @@
     </style>
     <script>
         (function() {
-            const slug = new URLSearchParams(window.location.search).get('slug') || "padrao";
+            const slug = new URLSearchParams(window.location.search).get('slug') || "studio-jra";
             const cached = localStorage.getItem('tema_neobooking_' + slug);
             if (cached) {
                 const c = JSON.parse(cached);
@@ -285,7 +244,6 @@
 </head>
 <body>
     <div class="app-container" id="agendar-container">
-        <!-- Header da Esmalteria -->
         <header class="barber-header">
             <div class="brand-logo-container">
                 <img id="tenant-logo" src="" alt="Logo Studio" style="display:none;">
@@ -295,19 +253,16 @@
             <p id="tenant-slogan">Esmalteria & Studio de Beleza</p>
         </header>
 
-        <!-- Seleção de Profissional / Nail Designer -->
         <section class="section">
             <h2><i class="fa-solid fa-user-check"></i> 1. Escolha a Profissional</h2>
             <div id="barbers-grid" class="barbers-grid"></div>
         </section>
 
-        <!-- Seleção de Serviços -->
         <section class="section">
             <h2><i class="fa-solid fa-hand-sparkles"></i> 2. Escolha os Serviços</h2>
             <div id="services-grid" class="services-grid"></div>
         </section>
 
-        <!-- Resumo Flutuante de Seleção -->
         <div id="resumo-flutuante">
             <div>
                 <span id="resumo-qtd-servicos" style="font-size: 0.8rem; color: var(--text-muted); display: block;">Nenhum serviço</span>
@@ -316,7 +271,6 @@
             <span id="resumo-duracao" style="font-size: 0.8rem; color: #FFF; background: rgba(255,255,255,0.08); padding: 6px 12px; border-radius: 8px;">0 min</span>
         </div>
 
-        <!-- Grade de Horários (Conforme Print Enviado) -->
         <section class="section">
             <h2><i class="fa-regular fa-calendar-days"></i> 3. Data e Horário</h2>
             <div class="input-group">
@@ -326,17 +280,14 @@
 
             <div class="time-slots-container">
                 <label style="font-size: 0.88rem; color: var(--text-muted); font-weight: 500;">Selecione o Horário:</label>
-                <!-- Input hidden que guarda o horário selecionado -->
                 <input type="hidden" id="time" value="">
                 
-                <!-- Grid em botões de 4 colunas -->
                 <div id="slots-grid" class="time-slots-grid">
                     <div class="no-slots-msg">Selecione o profissional e a data acima</div>
                 </div>
             </div>
         </section>
 
-        <!-- Dados da Cliente -->
         <section class="section">
             <h2><i class="fa-regular fa-address-card"></i> 4. Seus Dados</h2>
             <div class="input-group">
@@ -354,7 +305,6 @@
         </button>
     </div>
 
-    <!-- Modal de Confirmação e Pagamento do Sinal -->
     <div id="modal-confirmacao" class="custom-modal-overlay">
         <div class="custom-modal">
             <h3>Resumo da Reserva</h3>
@@ -383,7 +333,6 @@
         </div>
     </div>
 
-    <!-- Modal Alerta -->
     <div id="modal-alerta-custom" class="custom-modal-overlay">
         <div class="custom-modal" style="text-align: center; max-width: 330px;">
             <i class="fa-solid fa-circle-exclamation" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 14px;"></i>
