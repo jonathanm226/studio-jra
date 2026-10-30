@@ -3,7 +3,8 @@ const SUPABASE_KEY = "sb_publishable_-30z4xAhwJPYmy1bfSEjCw_loKUe8uL";
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const urlParams = new URLSearchParams(window.location.search);
-const TENANT_ATIVO = urlParams.get('slug') || "padrao";
+// Fixado individualmente para o Studio JRA caso o parâmetro não seja passado na URL
+const TENANT_ATIVO = urlParams.get('slug') || "studio-jra";
 
 let tenantConfig = { 
     nome_empresa: "Studio JRA - Unhas & Estética", sobre: "", endereco: "", horario_inicio: "08:00", horario_fim: "19:00", logo_url: "", chave_pix: "", 
@@ -81,7 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function carregarTenantConfig() {
     try {
-        const { data } = await _supabase.from("saas_estabelecimentos").select("*").eq("slug", TENANT_ATIVO).single();
+        const { data } = await _supabase.from("saas_estabelecimentos").select("*").eq("slug", TENANT_ATIVO).maybeSingle();
         if (data) {
             Object.assign(tenantConfig, data);
             if (!tenantConfig.barbeiros) tenantConfig.barbeiros = [];
@@ -210,7 +211,6 @@ function atualizarResumo() {
     checkAvailableTimes();
 }
 
-/* NOVO RENDERIZADOR DA GRADE DE HORÁRIOS EM BOTÕES (IGUAL AO PRINT) */
 async function checkAvailableTimes() {
     const dateInput = document.getElementById("date").value; 
     const timeHiddenInput = document.getElementById("time");
@@ -218,7 +218,7 @@ async function checkAvailableTimes() {
     
     if (!slotsGrid) return;
 
-    timeHiddenInput.value = ""; // Limpa a seleção anterior
+    timeHiddenInput.value = ""; 
 
     if (!barbeiroSelecionado) {
         slotsGrid.innerHTML = '<div class="no-slots-msg">Selecione a profissional acima primeiro</div>';
@@ -267,10 +267,8 @@ async function checkAvailableTimes() {
             }
 
             if (conflito) {
-                // Horário Ocupado: Botão escurecido e desabilitado (conforme o print)
                 slotsGrid.innerHTML += `<button type="button" class="time-slot-btn disabled" disabled>${timeStr}</button>`;
             } else {
-                // Horário Disponível: Botão clicável
                 slotsGrid.innerHTML += `<button type="button" class="time-slot-btn" onclick="selecionarHorarioSlot('${timeStr}', this)">${timeStr}</button>`;
                 temHorario = true;
             }
@@ -352,7 +350,6 @@ async function confirmarEEnviar() {
     mostrarAlertaCustomizado("Agendamento pré-reservado! Não se esqueça de enviar o comprovante de pagamento no WhatsApp do Studio.", true);
 }
 
-/* Lógica do Painel de Gestão */
 function fazerLogin() {
     const user = document.getElementById("login-usuario").value.trim().toLowerCase();
     const pass = document.getElementById("login-senha").value.trim();
