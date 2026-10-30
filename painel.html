@@ -62,7 +62,7 @@
     </style>
     <script>
         (function() {
-            const slug = new URLSearchParams(window.location.search).get('slug') || "padrao";
+            const slug = new URLSearchParams(window.location.search).get('slug') || "studio-jra";
             const cached = localStorage.getItem('tema_neobooking_' + slug);
             if (cached) {
                 const c = JSON.parse(cached);
@@ -138,7 +138,7 @@
         </section>
     </div>
 
-    <!-- MODAL DE CONFIGURAÇÕES ADMIN (CADASTRO DE SERVIÇOS E PROFISSIONAIS) -->
+    <!-- MODAL DE CONFIGURAÇÕES ADMIN -->
     <div id="modal-config-admin" class="custom-modal-overlay">
         <div class="custom-modal" style="max-width: 480px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
@@ -153,12 +153,10 @@
                 <button type="button" class="tab-btn" onclick="mudarPassoConfig(4, this)">4. Serviços</button>
             </div>
 
-            <!-- PASSO 1: DADOS DO STUDIO -->
             <div id="step-config-1" class="config-step-content active">
                 <div class="input-group"><label>Nome do Estabelecimento:</label><input type="text" id="config-nome-empresa" placeholder="Ex: Studio JRA Unhas"></div>
                 <div class="input-group"><label>Sobre o Studio:</label><textarea id="config-sobre" rows="3" placeholder="Apresentação do espaço..."></textarea></div>
                 <div class="input-group"><label>Endereço Completo:</label><input type="text" id="config-endereco" placeholder="Ex: Av. Principal, nº 500"></div>
-                
                 <div class="input-group"><label>Chave PIX (Para Sinal do Agendamento):</label><input type="text" id="config-chave-pix" placeholder="Celular, CPF, E-mail ou Aleatória"></div>
 
                 <div class="input-group">
@@ -180,14 +178,12 @@
                 <button type="button" class="btn-acao" onclick="mudarPassoConfig(2, null)" style="margin-top: 10px;">Avançar</button>
             </div>
 
-            <!-- PASSO 2: PALETA DE CORES -->
             <div id="step-config-2" class="config-step-content">
                 <label style="font-size: 0.85rem; color: #CCC; display: block; margin-bottom: 8px;">Selecione a Paleta de Cores:</label>
                 <div class="palette-grid" id="palettes-container"></div>
                 <button type="button" class="btn-acao" onclick="mudarPassoConfig(3, null)" style="margin-top: 15px;">Avançar</button>
             </div>
 
-            <!-- PASSO 3: CADASTRO DE PROFISSIONAIS -->
             <div id="step-config-3" class="config-step-content">
                 <label style="font-size: 0.85rem; color: #CCC; display: block; margin-bottom: 6px;">Manicures / Nail Designers:</label>
                 <div id="lista-profissionais-config" style="margin-bottom: 8px; max-height: 120px; overflow-y: auto;"></div>
@@ -200,7 +196,6 @@
                 <button type="button" class="btn-acao" onclick="mudarPassoConfig(4, null)">Avançar</button>
             </div>
 
-            <!-- PASSO 4: CADASTRO DE SERVIÇOS (PELO ADMIN) -->
             <div id="step-config-4" class="config-step-content">
                 <label style="font-size: 0.85rem; color: #CCC; display: block; margin-bottom: 6px;">Catálogo de Serviços:</label>
                 <div id="lista-servicos-config" style="margin-bottom: 8px; max-height: 120px; overflow-y: auto;"></div>
@@ -217,7 +212,7 @@
         </div>
     </div>
 
-    <!-- Modais de Atendimento e Reagendamento -->
+    <!-- Modais de Atendimento e Outros -->
     <div id="modal-gerenciar-atendimento" class="custom-modal-overlay">
         <div class="custom-modal" style="max-width: 380px;">
             <h3 style="text-align: center; margin-bottom: 15px; font-size: 1.1rem; color: #FFF; text-transform: uppercase;">Gerenciar Atendimento</h3>
@@ -250,7 +245,6 @@
         </div>
     </div>
 
-    <!-- Modal Cancelamento -->
     <div id="modal-confirmar-cancelamento" class="custom-modal-overlay" style="z-index: 10000;">
         <div class="custom-modal" style="text-align: center; max-width: 320px;">
             <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.5rem; color: #e74c3c; margin-bottom: 15px;"></i>
@@ -263,7 +257,6 @@
         </div>
     </div>
 
-    <!-- Modal Novo Agendamento (Admin/Profissional) -->
     <div id="modal-novo-agendamento" class="custom-modal-overlay">
         <div class="custom-modal" style="max-width: 440px; max-height: 90vh; overflow-y: auto;">
             <h3 id="titulo-modal-novo-agendamento" style="text-align: center; margin-bottom: 15px; font-size: 1.1rem; color: #FFF; text-transform: uppercase;">Novo Agendamento</h3>
@@ -304,7 +297,6 @@
         </div>
     </div>
 
-    <!-- Modal Alerta -->
     <div id="modal-alerta-custom" class="custom-modal-overlay">
         <div class="custom-modal" style="text-align: center; max-width: 320px;">
             <i class="fa-solid fa-circle-exclamation" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px;"></i>
